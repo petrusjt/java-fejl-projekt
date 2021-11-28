@@ -1,38 +1,35 @@
 package com.epam.training.ticketservice.ui.shellcomponents;
 
-import com.epam.training.ticketservice.core.LoginService;
-import com.epam.training.ticketservice.core.UserService;
+import com.epam.training.ticketservice.core.user.UserService;
+import com.epam.training.ticketservice.core.security.LoginService;
 import com.epam.training.ticketservice.core.user.model.UserDto;
+import com.epam.training.ticketservice.core.user.model.UserLoginDto;
 import com.epam.training.ticketservice.core.user.persistence.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 
 @ShellComponent
-public class UserCommands {
+public class UserCommands extends SecuredCommand{
 
     private final LoginService loginService;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserCommands(LoginService loginService, PasswordEncoder passwordEncoder, UserService userService) {
+    public UserCommands(LoginService loginService, UserService userService) {
+        super(loginService);
         this.loginService = loginService;
-        this.passwordEncoder = passwordEncoder;
         this.userService = userService;
     }
 
     @ShellMethod(value = "Sign in privileged", key = "sign in privileged")
     public void signInPrivileged(String username, String password) {
-        loginService.signIn(username, password);
+        loginService.signIn(new UserLoginDto(username, password));
     }
 
     @ShellMethod(value = "Sign out", key = "sign out")
-    //@ShellMethodAvailability("isUserSignedIn")
+    @ShellMethodAvailability("isUserLoggedIn")
     public void signOut() {
         loginService.signOut();
     }

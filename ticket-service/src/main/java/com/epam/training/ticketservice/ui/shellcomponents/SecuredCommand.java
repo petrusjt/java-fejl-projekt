@@ -1,5 +1,7 @@
 package com.epam.training.ticketservice.ui.shellcomponents;
 
+import com.epam.training.ticketservice.core.security.LoginService;
+import com.epam.training.ticketservice.core.user.model.UserDto;
 import com.epam.training.ticketservice.core.user.persistence.entity.Role;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,22 +12,28 @@ import java.util.Optional;
 
 public abstract class SecuredCommand {
 
-    public Availability isUserLoggedIn() {
-        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Optional<? extends GrantedAuthority> role = auth.getAuthorities().stream().findFirst();
+    protected final LoginService loginService;
 
-        if (role.isPresent()) {
-            return Availability.available();
+    protected SecuredCommand(LoginService loginService) {
+        this.loginService = loginService;
+    }
+
+    public Availability isUserLoggedIn() {
+        final UserDto user = loginService.getLoggedInUserData();
+        if (user != null) {
+            if (user.getRole() != null) {
+                return Availability.available();
+            }
         }
         return Availability.unavailable("You are not signed in.");
     }
 
     public Availability isAdminUser() {
-        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Optional<? extends GrantedAuthority> role = auth.getAuthorities().stream().findFirst();
-
-        if (role.isPresent() && role.get().equals(Role.ADMIN)) {
-            return Availability.available();
+        final UserDto user = loginService.getLoggedInUserData();
+        if (user != null) {
+            if (user.getRole() == Role.ADMIN) {
+                return Availability.available();
+            }
         }
         return Availability.unavailable("This command requires privileged account.");
     }
