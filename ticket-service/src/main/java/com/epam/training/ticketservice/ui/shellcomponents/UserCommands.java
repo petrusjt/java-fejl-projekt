@@ -1,5 +1,6 @@
 package com.epam.training.ticketservice.ui.shellcomponents;
 
+import com.epam.training.ticketservice.core.security.exception.AuthenticationException;
 import com.epam.training.ticketservice.core.user.UserService;
 import com.epam.training.ticketservice.core.security.LoginService;
 import com.epam.training.ticketservice.core.user.model.UserDto;
@@ -11,7 +12,7 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 
 @ShellComponent
-public class UserCommands extends SecuredCommand{
+public class UserCommands extends SecuredCommand {
 
     private final LoginService loginService;
     private final UserService userService;
@@ -24,8 +25,13 @@ public class UserCommands extends SecuredCommand{
     }
 
     @ShellMethod(value = "Sign in privileged", key = "sign in privileged")
-    public void signInPrivileged(String username, String password) {
-        loginService.signIn(new UserLoginDto(username, password));
+    public String signInPrivileged(String username, String password) {
+        try {
+            loginService.signIn(new UserLoginDto(username, password));
+            return null;
+        } catch (AuthenticationException ex) {
+            return ex.getMessage();
+        }
     }
 
     @ShellMethod(value = "Sign out", key = "sign out")
