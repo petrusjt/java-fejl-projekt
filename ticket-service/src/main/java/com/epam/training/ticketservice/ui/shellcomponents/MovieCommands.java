@@ -37,6 +37,7 @@ public class MovieCommands extends SecuredCommand {
 
     @ShellMethod(value = "List movies", key = "list movies")
     public List<Object> listMovies() {
+        //TODO use MovieDto
         final List<Movie> movies = movieService.listMovies();
         if (CollectionUtils.isEmpty(movies)) {
             return List.of("There are no movies at the moment");
