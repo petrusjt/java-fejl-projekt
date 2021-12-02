@@ -24,7 +24,7 @@ public class UserCommands extends SecuredCommand {
         this.userService = userService;
     }
 
-    @ShellMethod(value = "Sign in privileged", key = "sign in privileged")
+    @ShellMethod(value = "Sign in privileged", key = {"sip", "sign in privileged"})
     public String signInPrivileged(String username, String password) {
         try {
             loginService.signIn(new UserLoginDto(username, password));
