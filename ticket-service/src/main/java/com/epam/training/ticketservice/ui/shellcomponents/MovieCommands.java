@@ -1,17 +1,15 @@
 package com.epam.training.ticketservice.ui.shellcomponents;
 
 import com.epam.training.ticketservice.core.movie.MovieService;
-import com.epam.training.ticketservice.core.movie.persistence.entity.Movie;
 import com.epam.training.ticketservice.core.movie.persistence.model.MovieDto;
 import com.epam.training.ticketservice.core.security.LoginService;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ShellComponent
 public class MovieCommands extends SecuredCommand {
@@ -37,14 +35,11 @@ public class MovieCommands extends SecuredCommand {
 
     @ShellMethod(value = "List movies", key = "list movies")
     public List<Object> listMovies() {
-        //TODO use MovieDto
-        final List<Movie> movies = movieService.listMovies();
+        final List<MovieDto> movies = movieService.listMovies();
         if (CollectionUtils.isEmpty(movies)) {
             return List.of("There are no movies at the moment");
         }
-        return movies.stream()
-                .map(movie -> new MovieDto(movie.getTitle(), movie.getGenre(), movie.getLength()))
-                .collect(Collectors.toList());
+        return new ArrayList<>(movies);
     }
 
     @ShellMethod(value = "Delete movie", key = "delete movie")

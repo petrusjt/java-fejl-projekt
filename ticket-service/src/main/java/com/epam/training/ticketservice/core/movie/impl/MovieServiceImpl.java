@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MovieServiceImpl implements MovieService {
@@ -19,8 +20,10 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<Movie> listMovies() {
-        return movieRepository.findAll();
+    public List<MovieDto> listMovies() {
+        return movieRepository.findAll().stream()
+                .map(movie -> new MovieDto(movie.getTitle(), movie.getGenre(), movie.getLength()))
+                .collect(Collectors.toList());
     }
 
     @Override
