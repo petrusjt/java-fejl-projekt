@@ -14,11 +14,12 @@ public class MovieDto {
     private final String genre;
     private final Long length;
 
-    public String toString() {
-        return String.format("%s (%s, %d minutes)", title, genre, length);
-    }
-
     public Movie toMovie() {
         return new Movie(null, title, genre, length);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s, %d minutes)", title, genre, length);
     }
 }

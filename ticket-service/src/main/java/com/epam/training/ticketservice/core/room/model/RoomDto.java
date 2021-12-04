@@ -19,6 +19,7 @@ public class RoomDto {
         return numberOfRows * numberOfColumns;
     }
 
+    @Override
     public String toString() {
         return String.format("Room %s with %d seats, %d rows and %d columns",
                 name,
