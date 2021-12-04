@@ -1,10 +1,11 @@
 package com.epam.training.ticketservice.core.movie.impl;
 
 import com.epam.training.ticketservice.core.movie.MovieService;
+import com.epam.training.ticketservice.core.movie.exception.MovieAlreadyExistsException;
+import com.epam.training.ticketservice.core.movie.exception.NoSuchMovieException;
 import com.epam.training.ticketservice.core.movie.persistence.entity.Movie;
 import com.epam.training.ticketservice.core.movie.persistence.model.MovieDto;
 import com.epam.training.ticketservice.core.movie.persistence.repository.MovieRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,14 +28,18 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public void createMovie(final MovieDto movieDto) {
+    public void createMovie(final MovieDto movieDto) throws MovieAlreadyExistsException {
         final Movie movie = movieDto.toMovie();
+        if (movieRepository.existsByTitle(movie.getTitle())) {
+            throw new MovieAlreadyExistsException("Movie already exists by title " + movieDto.getTitle());
+        }
         movieRepository.save(movie);
     }
 
     @Override
-    public void updateMovie(final MovieDto movieDto) {
-        final Movie movie = movieRepository.findByTitle(movieDto.getTitle());
+    public void updateMovie(final MovieDto movieDto) throws NoSuchMovieException {
+        final Movie movie = movieRepository.findByTitle(movieDto.getTitle()).orElseThrow(() ->
+                new NoSuchMovieException("No movie exists by title " + movieDto.getTitle()));
         movie.setTitle(movieDto.getTitle());
         movie.setGenre(movieDto.getGenre());
         movie.setLength(movieDto.getLength());
@@ -42,8 +47,9 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public void deleteMovie(String title) {
-        final Movie movie = movieRepository.findByTitle(title);
+    public void deleteMovie(final String title) throws NoSuchMovieException {
+        final Movie movie = movieRepository.findByTitle(title).orElseThrow(() ->
+                new NoSuchMovieException("No movie exists by title " + title));
         movieRepository.delete(movie);
     }
 }

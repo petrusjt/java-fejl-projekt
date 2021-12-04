@@ -6,7 +6,6 @@ import com.epam.training.ticketservice.core.security.LoginService;
 import com.epam.training.ticketservice.core.user.model.UserDto;
 import com.epam.training.ticketservice.core.user.model.UserLoginDto;
 import com.epam.training.ticketservice.core.user.persistence.entity.Role;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
@@ -17,7 +16,6 @@ public class UserCommands extends SecuredCommand {
     private final LoginService loginService;
     private final UserService userService;
 
-    @Autowired
     public UserCommands(LoginService loginService, UserService userService) {
         super(loginService);
         this.loginService = loginService;

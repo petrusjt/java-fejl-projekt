@@ -1,6 +1,8 @@
 package com.epam.training.ticketservice.ui.shellcomponents;
 
 import com.epam.training.ticketservice.core.movie.MovieService;
+import com.epam.training.ticketservice.core.movie.exception.MovieAlreadyExistsException;
+import com.epam.training.ticketservice.core.movie.exception.NoSuchMovieException;
 import com.epam.training.ticketservice.core.movie.persistence.model.MovieDto;
 import com.epam.training.ticketservice.core.security.LoginService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,14 +25,25 @@ public class MovieCommands extends SecuredCommand {
 
     @ShellMethod(value = "Create movie", key = "create movie")
     @ShellMethodAvailability("isAdminUser")
-    public void createMovie(final String title, final String genre, final Long length) {
-        movieService.createMovie(new MovieDto(title, genre, length));
+    public String createMovie(final String title, final String genre, final Long length) {
+        try {
+            movieService.createMovie(new MovieDto(title, genre, length));
+            return null;
+        } catch (MovieAlreadyExistsException e) {
+            //e.printStackTrace();
+            return e.getMessage();
+        }
     }
 
     @ShellMethod(value = "Update movie", key = "update movie")
     @ShellMethodAvailability("isAdminUser")
-    public void updateMovie(final String title, final String genre, final Long length) {
-        movieService.updateMovie(new MovieDto(title, genre, length));
+    public String updateMovie(final String title, final String genre, final Long length) {
+        try {
+            movieService.updateMovie(new MovieDto(title, genre, length));
+            return null;
+        } catch (NoSuchMovieException e) {
+            return e.getMessage();
+        }
     }
 
     @ShellMethod(value = "List movies", key = "list movies")
@@ -43,7 +56,12 @@ public class MovieCommands extends SecuredCommand {
     }
 
     @ShellMethod(value = "Delete movie", key = "delete movie")
-    public void deleteMovie(final String title) {
-        movieService.deleteMovie(title);
+    public String deleteMovie(final String title) {
+        try {
+            movieService.deleteMovie(title);
+            return null;
+        } catch (NoSuchMovieException e) {
+            return e.getMessage();
+        }
     }
 }
