@@ -31,7 +31,7 @@ public class MovieServiceImpl implements MovieService {
     public void createMovie(final MovieDto movieDto) throws MovieAlreadyExistsException {
         final Movie movie = movieDto.toMovie();
         if (movieRepository.existsByTitle(movie.getTitle())) {
-            throw new MovieAlreadyExistsException("Movie already exists by title " + movieDto.getTitle());
+            throw new MovieAlreadyExistsException(movieDto.getTitle());
         }
         movieRepository.save(movie);
     }
@@ -39,7 +39,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public void updateMovie(final MovieDto movieDto) throws NoSuchMovieException {
         final Movie movie = movieRepository.findByTitle(movieDto.getTitle()).orElseThrow(() ->
-                new NoSuchMovieException("No movie exists by title " + movieDto.getTitle()));
+                new NoSuchMovieException(movieDto.getTitle()));
         movie.setTitle(movieDto.getTitle());
         movie.setGenre(movieDto.getGenre());
         movie.setLength(movieDto.getLength());
@@ -49,7 +49,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public void deleteMovie(final String title) throws NoSuchMovieException {
         final Movie movie = movieRepository.findByTitle(title).orElseThrow(() ->
-                new NoSuchMovieException("No movie exists by title " + title));
+                new NoSuchMovieException(title));
         movieRepository.delete(movie);
     }
 }

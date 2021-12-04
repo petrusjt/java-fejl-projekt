@@ -30,7 +30,6 @@ public class MovieCommands extends SecuredCommand {
             movieService.createMovie(new MovieDto(title, genre, length));
             return null;
         } catch (MovieAlreadyExistsException e) {
-            //e.printStackTrace();
             return e.getMessage();
         }
     }
@@ -56,6 +55,7 @@ public class MovieCommands extends SecuredCommand {
     }
 
     @ShellMethod(value = "Delete movie", key = "delete movie")
+    @ShellMethodAvailability("isAdminUser")
     public String deleteMovie(final String title) {
         try {
             movieService.deleteMovie(title);
