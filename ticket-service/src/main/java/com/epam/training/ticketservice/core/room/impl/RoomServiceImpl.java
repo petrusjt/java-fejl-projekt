@@ -1,7 +1,8 @@
 package com.epam.training.ticketservice.core.room.impl;
 
-import com.epam.training.ticketservice.core.movie.persistence.entity.Movie;
 import com.epam.training.ticketservice.core.room.RoomService;
+import com.epam.training.ticketservice.core.room.exception.NoSuchRoomException;
+import com.epam.training.ticketservice.core.room.exception.RoomAlreadyExistsException;
 import com.epam.training.ticketservice.core.room.model.RoomDto;
 import com.epam.training.ticketservice.core.room.persistence.entity.Room;
 import com.epam.training.ticketservice.core.room.persistence.repository.RoomRepository;
@@ -20,21 +21,18 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void createRoom(final RoomDto roomDto) {
+    public void createRoom(final RoomDto roomDto) throws RoomAlreadyExistsException {
         final Room room = roomDto.toRoom();
+        if (roomRepository.existsByName(roomDto.getName())) {
+            throw new RoomAlreadyExistsException(roomDto.getName());
+        }
         roomRepository.save(room);
     }
 
-    /*
-    * final Movie movie = movieRepository.findByTitle(movieDto.getTitle());
-        movie.setTitle(movieDto.getTitle());
-        movie.setGenre(movieDto.getGenre());
-        movie.setLength(movieDto.getLength());
-        movieRepository.save(movie);
-    * */
     @Override
-    public void updateRoom(final RoomDto roomDto) {
-        final Room room = roomRepository.findByName(roomDto.getName());
+    public void updateRoom(final RoomDto roomDto) throws NoSuchRoomException {
+        final Room room = roomRepository.findByName(roomDto.getName()).orElseThrow(() ->
+                new NoSuchRoomException(roomDto.getName()));;
         room.setName(roomDto.getName());
         room.setNumberOfRows(roomDto.getNumberOfRows());
         room.setNumberOfRows(roomDto.getNumberOfColumns());
@@ -42,8 +40,9 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void deleteRoom(final String name) {
-        final Room room = roomRepository.findByName(name);
+    public void deleteRoom(final String name) throws NoSuchRoomException {
+        final Room room = roomRepository.findByName(name).orElseThrow(() ->
+                new NoSuchRoomException(name));
         roomRepository.delete(room);
     }
 
