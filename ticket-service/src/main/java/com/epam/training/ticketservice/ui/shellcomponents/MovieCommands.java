@@ -45,15 +45,6 @@ public class MovieCommands extends SecuredCommand {
         }
     }
 
-    @ShellMethod(value = "List movies", key = "list movies")
-    public List<Object> listMovies() {
-        final List<MovieDto> movies = movieService.listMovies();
-        if (CollectionUtils.isEmpty(movies)) {
-            return List.of("There are no movies at the moment");
-        }
-        return new ArrayList<>(movies);
-    }
-
     @ShellMethod(value = "Delete movie", key = "delete movie")
     @ShellMethodAvailability("isAdminUser")
     public String deleteMovie(final String title) {
@@ -63,5 +54,14 @@ public class MovieCommands extends SecuredCommand {
         } catch (NoSuchMovieException e) {
             return e.getMessage();
         }
+    }
+
+    @ShellMethod(value = "List movies", key = "list movies")
+    public List<Object> listMovies() {
+        final List<MovieDto> movies = movieService.listMovies();
+        if (CollectionUtils.isEmpty(movies)) {
+            return List.of("There are no movies at the moment");
+        }
+        return new ArrayList<>(movies);
     }
 }
