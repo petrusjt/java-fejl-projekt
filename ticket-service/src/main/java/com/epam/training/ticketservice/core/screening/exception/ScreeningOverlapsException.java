@@ -6,7 +6,4 @@ public class ScreeningOverlapsException extends ScreeningNotCreatableException {
         super("There is an overlapping screening");
     }
 
-    public ScreeningOverlapsException(final String message) {
-        super(message);
-    }
 }

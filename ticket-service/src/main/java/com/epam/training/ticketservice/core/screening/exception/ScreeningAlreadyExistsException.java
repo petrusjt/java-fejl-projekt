@@ -6,7 +6,4 @@ public class ScreeningAlreadyExistsException extends ScreeningNotCreatableExcept
         super("Screening already exists");
     }
 
-    public ScreeningAlreadyExistsException(final String message) {
-        super(message);
-    }
 }
